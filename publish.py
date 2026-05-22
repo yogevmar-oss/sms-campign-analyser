@@ -218,7 +218,7 @@ def make_seo_head(store: dict, tailwind_css: str) -> str:
 </script>
 
 <style>{tailwind_css}</style>
-<style>*{{box-sizing:border-box;margin:0;padding:0}}body{{background:#FAF8F4}}</style>
+<style>*{{box-sizing:border-box;margin:0;padding:0}}body{{background:#FAF8F4}}#root{{direction:ltr}}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">"""
