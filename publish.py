@@ -22,7 +22,9 @@ Usage:
 
 import json
 import re
+import subprocess
 import sys
+import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -144,9 +146,26 @@ def derive_body_insight(data: dict, name_he: str) -> str:
     return f"ניתוח היסטוריית מבצעי ה-SMS של {name_he}."
 
 
+# ── Tailwind CSS compilation ──────────────────────────────────────────────────
+
+def compile_tailwind_css() -> str:
+    """Compile Tailwind against the JSX template once; return minified CSS."""
+    input_css = HERE / "tailwind_input.css"
+    with tempfile.NamedTemporaryFile(suffix=".css", delete=False) as tmp:
+        out_path = tmp.name
+    subprocess.run(
+        ["npx", "--yes", "tailwindcss", "-i", str(input_css), "-o", out_path, "--minify"],
+        cwd=str(HERE), shell=True, check=True,
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    css = Path(out_path).read_text(encoding="utf-8")
+    Path(out_path).unlink(missing_ok=True)
+    return css
+
+
 # ── SEO head (follows HANDOFF.md §2b exactly) ─────────────────────────────────
 
-def make_seo_head(store: dict) -> str:
+def make_seo_head(store: dict, tailwind_css: str) -> str:
     slug = store["slug"]
     canonical = f"{BASE_URL}/{slug}/"
     title = store["title"]
@@ -198,7 +217,8 @@ def make_seo_head(store: dict) -> str:
 {jsonld}
 </script>
 
-<style>*{{box-sizing:border-box;margin:0;padding:0}}body{{background:#FAF8F4}}#root{{direction:ltr}}</style>
+<style>{tailwind_css}</style>
+<style>*{{box-sizing:border-box;margin:0;padding:0}}body{{background:#FAF8F4}}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">"""
@@ -227,7 +247,7 @@ def make_intro_block(store: dict, body_insight: str) -> str:
 def process_html(raw: str, seo_head: str, intro: str) -> str:
     # Set lang + dir on <html>
     html = re.sub(r"<html[^>]*>", '<html lang="he" dir="rtl">', raw, count=1)
-    # Replace entire <head> block
+    # Replace entire <head> block (also strips cdn.tailwindcss.com script)
     html = re.sub(
         r"<head>.*?</head>",
         f"<head>\n{seo_head}\n</head>",
@@ -245,6 +265,11 @@ def main():
     stores = [s for s in STORES if not filter_slugs or s["slug"] in filter_slugs]
 
     PUBLISHED.mkdir(exist_ok=True)
+
+    print("  compiling Tailwind CSS...")
+    tailwind_css = compile_tailwind_css()
+    print(f"  Tailwind CSS: {len(tailwind_css) // 1024} KB inlined")
+
     manifest_stores = []
 
     for store in stores:
@@ -263,7 +288,7 @@ def main():
         raw_html = html_path.read_text(encoding="utf-8")
 
         body_insight = derive_body_insight(data, store["nameHe"])
-        seo_head = make_seo_head(store)
+        seo_head = make_seo_head(store, tailwind_css)
         intro = make_intro_block(store, body_insight)
         final_html = process_html(raw_html, seo_head, intro)
 
