@@ -1616,9 +1616,7 @@ function DiscountTimeline({
 
 // ─── Main App ───────────────────────────────────────────────────────────────
 export default function App() {
-  // Default to the most-mentioned brand so the brand card has content right away
-  const defaultBrand = DATA.brand_recommendations[0]?.brand || "all";
-  const [selectedBrand, setSelectedBrand] = useState(defaultBrand);
+  const [selectedBrand, setSelectedBrand] = useState("sitewide");
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   // Selecting a brand (or All/Sitewide/Outlet) clears any active category filter.
