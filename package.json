@@ -1,0 +1,18 @@
+{
+  "name": "sms-campign-analysis",
+  "version": "1.0.0",
+  "description": "Turn an iPhone SMS-export PDF from a retail store into an interactive discount-history dashboard — a Keepa-style timeline that shows every promo that ran, which sale moments actually deliver, and a per-brand \"buy at X%\" recommendation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "recharts": "^3.8.1"
+  }
+}

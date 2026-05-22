@@ -1,0 +1,15 @@
+node_modules/
+.claude/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Raw input — private user data, never commit
+sms pdf/
+!sms pdf/.gitkeep
+
+# Raw JSON extracts contain full SMS text — keep local only
+output/*.json
+
+# HTML dashboards ARE committed (they're the shareable demos)
+# output/*.html  ← intentionally not ignored
