@@ -35,7 +35,7 @@ HERE = Path(__file__).resolve().parent
 OUTPUT = HERE / "output"
 PUBLISHED = HERE / "published"
 BASE_URL = "https://www.yogevmarom.com/tools/sales-calendar"
-OG_IMAGE = "https://www.yogevmarom.com/uploads/og-cover-v2.jpg"
+OG_IMAGE = "https://www.yogevmarom.com/uploads/og-sales-calendar.jpg"
 TODAY = date.today().isoformat()
 
 # ── Store registry ────────────────────────────────────────────────────────────
